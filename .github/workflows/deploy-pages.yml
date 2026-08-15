@@ -24,13 +24,13 @@ jobs:
         working-directory: ./admin-site
         run: |
           npm ci
-          npm run build
+          npm run build -- --base=./
 
       - name: Build tracker-site
         working-directory: ./tracker-site
         run: |
           npm ci
-          npm run build
+          npm run build -- --base=./
 
       - name: Prepare publish directory
         run: |
