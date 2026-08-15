@@ -6,7 +6,7 @@ export default function StudentsEditor({ user }){
   const [students, setStudents] = useState(null)
   const [error, setError] = useState(null)
   const [editing, setEditing] = useState(null)
-  const adminUid = import.meta.env.VITE_FIREBASE_ADMIN_UID
+  const adminUid = import.meta.env.VITE_FIREBASE_ADMIN_UID || 'Yic6ABeP1jY9WtQ5SatIgmz3vEk2'
 
   useEffect(()=>{
     const unsub = subscribeStudents((list)=>{ setStudents(list); setError(null) }, (e)=>{ console.error(e); setError('Ошибка загрузки') })
