@@ -20,6 +20,13 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Create Firebase environment files
+        env:
+          FIREBASE_ENV: ${{ secrets.FIREBASE_ENV }}
+        run: |
+          printf '%s' "$FIREBASE_ENV" > admin-site/.env.production
+          printf '%s' "$FIREBASE_ENV" > tracker-site/.env.production
+
       - name: Build admin-site
         working-directory: ./admin-site
         run: |
