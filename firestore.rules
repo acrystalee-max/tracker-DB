@@ -1,0 +1,15 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isOwner() {
+      return request.auth != null
+        && request.auth.uid == "ВСТАВИТЬ_UID_ВЛАДЕЛЬЦА";
+    }
+
+    match /Gr1/{studentId} {
+      allow read: if true;
+      allow create, update, delete: if isOwner();
+    }
+  }
+}

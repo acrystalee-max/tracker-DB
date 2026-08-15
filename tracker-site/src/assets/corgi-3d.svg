@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 260" preserveAspectRatio="xMidYMid meet">
+  <!-- Friendly cartoon corgi (orange-white) with scarf -->
+  <defs>
+    <linearGradient id="fur" x1="0" x2="1">
+      <stop offset="0" stop-color="#F4A261"/>
+      <stop offset="1" stop-color="#D97706"/>
+    </linearGradient>
+    <linearGradient id="scarf" x1="0" x2="1">
+      <stop offset="0" stop-color="#102A43"/>
+      <stop offset="1" stop-color="#D62839"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(0,10)">
+    <!-- body -->
+    <ellipse cx="150" cy="150" rx="110" ry="58" fill="url(#fur)"/>
+    <!-- white belly -->
+    <ellipse cx="150" cy="155" rx="70" ry="36" fill="#fff"/>
+    <!-- hind leg -->
+    <rect x="220" y="165" width="20" height="28" rx="8" fill="#F4A261"/>
+    <!-- front legs -->
+    <rect x="90" y="180" width="18" height="28" rx="8" fill="#F4A261"/>
+    <rect x="130" y="180" width="18" height="28" rx="8" fill="#F4A261"/>
+    <!-- head -->
+    <g transform="translate(40,20)">
+      <path d="M50 60 C20 60 10 30 50 14 C90 30 80 60 50 60 Z" fill="url(#fur)" stroke="#D97706" stroke-width="1"/>
+      <path d="M30 42 C50 48 70 48 90 42" fill="#fff" opacity="0.9"/>
+      <!-- ears -->
+      <path d="M10 20 L28 2 L44 22 L28 28 Z" fill="#F4A261" stroke="#D97706"/>
+      <path d="M90 20 L108 2 L124 22 L108 28 Z" fill="#F4A261" stroke="#D97706"/>
+      <!-- eyes -->
+      <circle cx="44" cy="36" r="6" fill="#102A43" />
+      <circle cx="76" cy="36" r="6" fill="#102A43" />
+      <!-- nose and smile -->
+      <ellipse cx="60" cy="48" rx="6" ry="5" fill="#102A43"/>
+      <path d="M52 54 C60 62 68 62 76 54" stroke="#102A43" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <!-- scarf -->
+      <g transform="translate(36,56)">
+        <path d="M0 0 L48 6 L60 18 L52 22 L36 12 L0 0 Z" fill="url(#scarf)"/>
+        <rect x="46" y="18" width="18" height="6" rx="3" fill="#102A43"/>
+      </g>
+    </g>
+  </g>
+</svg>

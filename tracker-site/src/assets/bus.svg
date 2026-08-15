@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
+  <!-- Red double-decker bus stylized -->
+  <rect x="4" y="18" width="112" height="44" rx="6" fill="#D62839"/>
+  <rect x="12" y="24" width="88" height="20" fill="#FFEBEE"/>
+  <rect x="12" y="48" width="88" height="8" fill="#FFEBEE"/>
+  <circle cx="28" cy="66" r="6" fill="#102A43"/>
+  <circle cx="92" cy="66" r="6" fill="#102A43"/>
+  <rect x="12" y="28" width="18" height="12" fill="#D62839" opacity="0.2"/>
+</svg>

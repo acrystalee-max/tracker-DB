@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 160">
+  <!-- Simple Big Ben tower silhouette -->
+  <rect x="28" y="20" width="24" height="120" fill="#102A43" rx="2"/>
+  <rect x="20" y="8" width="40" height="12" fill="#DCEBFA"/>
+  <circle cx="40" cy="40" r="10" fill="#F7FAFC"/>
+  <path d="M24 8 L40 0 L56 8 Z" fill="#D62839"/>
+</svg>
