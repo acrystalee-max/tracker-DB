@@ -3,7 +3,15 @@ import { collection, doc, setDoc, deleteDoc, getDoc, addDoc, serverTimestamp, up
 
 const GROUP = import.meta.env.VITE_FIREBASE_GROUP_COLLECTION || 'Gr1'
 const SETTINGS_ID = 'trackerSettings'
+export const MAX_HOMEWORKS = 10
 export const DEFAULT_HOMEWORK_LABELS = [1, 2, 3, 4, 5].map((n) => `Homework ${n}`)
+
+function normalizeHomeworkLabels(labels){
+  if(!Array.isArray(labels) || labels.length === 0) return DEFAULT_HOMEWORK_LABELS
+  return labels.slice(0, MAX_HOMEWORKS).map((value, index)=>{
+    return typeof value === 'string' && value.trim() ? value.trim() : `Homework ${index + 1}`
+  })
+}
 
 export function subscribeStudents(onUpdate, onError){
   const q = query(collection(db, GROUP))
@@ -21,19 +29,12 @@ export function subscribeHomeworkLabels(onUpdate, onError){
   const ref = doc(db, GROUP, SETTINGS_ID)
   return onSnapshot(ref, (snapshot)=>{
     const saved = snapshot.exists() ? snapshot.data().homeworkLabels : null
-    const labels = DEFAULT_HOMEWORK_LABELS.map((fallback, index)=>{
-      const value = Array.isArray(saved) ? saved[index] : null
-      return typeof value === 'string' && value.trim() ? value.trim() : fallback
-    })
-    onUpdate(labels)
+    onUpdate(normalizeHomeworkLabels(saved))
   }, onError)
 }
 
 export async function updateHomeworkLabels(labels){
-  const normalized = DEFAULT_HOMEWORK_LABELS.map((fallback, index)=>{
-    const value = labels[index]
-    return typeof value === 'string' && value.trim() ? value.trim() : fallback
-  })
+  const normalized = normalizeHomeworkLabels(labels)
   return setDoc(doc(db, GROUP, SETTINGS_ID), {
     type: 'settings',
     homeworkLabels: normalized,
@@ -42,13 +43,12 @@ export async function updateHomeworkLabels(labels){
 }
 
 export async function createStudent(data){
+  const homework = Object.fromEntries(
+    Object.entries(data).filter(([key])=>/^hw([1-9]|10)$/.test(key))
+  )
   const payload = {
     name: data.name.trim(),
-    hw1: data.hw1 ?? 0,
-    hw2: data.hw2 ?? 0,
-    hw3: data.hw3 ?? 0,
-    hw4: data.hw4 ?? 0,
-    hw5: data.hw5 ?? 0,
+    ...homework,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   }
