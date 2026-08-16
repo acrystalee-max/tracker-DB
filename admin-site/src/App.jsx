@@ -28,21 +28,21 @@ export default function App(){
       <header className="admin-header">
         <div className="admin-title">
           <div className="title-main">English Tracker Admin</div>
-          <div className="title-sub">Управление шестью группами</div>
+          <div className="title-sub">Manage six groups</div>
         </div>
         <div className="header-right">
           <img src={CorgiSmall} alt="corgi" className="corgi-small" />
         </div>
       </header>
       <main>
-        {loading ? <div className="loading">Проверка сессии...</div> : (
+        {loading ? <div className="loading">Checking session...</div> : (
           user ? (
             <div>
               <div className="controls">
-                <button onClick={()=>signOut(auth)}>Выйти</button>
+                <button onClick={()=>signOut(auth)}>Sign out</button>
               </div>
               <section className="group-navigation card">
-                <div className="group-tabs" role="tablist" aria-label="Выбор группы">
+                <div className="group-tabs" role="tablist" aria-label="Choose a group">
                   {GROUPS.map((group)=><button
                     key={group.id}
                     type="button"
@@ -51,13 +51,13 @@ export default function App(){
                   >{group.name}</button>)}
                 </div>
                 <div className="group-link-row">
-                  <div><strong>{selectedGroup.name}</strong><div className="group-link-help">У каждой группы своя ссылка и свой пароль.</div></div>
+                  <div><strong>{selectedGroup.name}</strong><div className="group-link-help">Each group has its own link and password.</div></div>
                   <button type="button" className="btn btn-info" onClick={async()=>{
                     const url = new URL('../tracker/', window.location.href)
                     url.searchParams.set('group', selectedGroup.id)
                     await navigator.clipboard.writeText(url.toString())
-                    setCopyMessage('Ссылка скопирована')
-                  }}>Скопировать ссылку группы</button>
+                    setCopyMessage('Link copied')
+                  }}>Copy group link</button>
                   {copyMessage && <span className="copy-message">{copyMessage}</span>}
                 </div>
               </section>
