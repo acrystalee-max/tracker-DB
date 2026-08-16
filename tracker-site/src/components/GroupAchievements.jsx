@@ -11,7 +11,7 @@ const cards = [
   { key: 'currentLeader', label: 'Current Leader', caption: 'Top XP this month', image: LeaderCrown, tone: 'leader' },
 ]
 
-export default function GroupAchievements({ summary }) {
+export default function GroupAchievements({ summary, monthName }) {
   const progress = Math.max(0, Math.min(100, Number(summary.groupProgress) || 0))
   const leader = String(summary.currentLeader || 'No scores yet')
   const leaderInitial = leader === 'No scores yet' ? '–' : leader.trim().charAt(0).toUpperCase()
@@ -20,7 +20,7 @@ export default function GroupAchievements({ summary }) {
     <div className="section-heading achievements-heading">
       <div>
         <p className="eyebrow">Monthly overview</p>
-        <h2 id="group-achievements-title">Monthly Overview</h2>
+        <h2 id="group-achievements-title">{monthName} Overview</h2>
       </div>
     </div>
     <div className="achievement-grid">

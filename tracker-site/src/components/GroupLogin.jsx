@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../services/firebase'
 
-export default function GroupLogin({ group }) {
+export default function GroupLogin({ group, accessError = '', onAttempt }) {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -11,6 +11,7 @@ export default function GroupLogin({ group }) {
     event.preventDefault()
     setLoading(true)
     setError('')
+    onAttempt?.()
     try {
       await signInWithEmailAndPassword(auth, group.accountEmail, password)
     } catch (loginError) {
@@ -36,7 +37,7 @@ export default function GroupLogin({ group }) {
             autoFocus
           />
         </label>
-        {error && <div className="login-error">{error}</div>}
+        {(error || accessError) && <div className="login-error">{error || accessError}</div>}
         <button type="submit" className="btn btn-primary" disabled={loading || !password}>
           {loading ? 'Checking...' : 'Open tracker'}
         </button>

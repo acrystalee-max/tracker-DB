@@ -23,8 +23,8 @@ body {
   min-width: 320px;
   background:
     radial-gradient(circle at 15% -5%, rgba(255,255,255,.95) 0 9%, transparent 30%),
-    radial-gradient(circle at 90% 3%, rgba(30,189,223,.32), transparent 28%),
-    linear-gradient(145deg, #bcecff 0%, #eefaff 42%, #d8f1fb 100%);
+    radial-gradient(circle at 90% 3%, rgba(0,192,237,.46), transparent 31%),
+    linear-gradient(145deg, #83dfff 0%, #e9faff 42%, #aee7fa 100%);
   background-attachment: fixed;
   color: var(--navy);
 }
@@ -39,12 +39,12 @@ button { touch-action: manipulation; }
   align-items: center;
   min-height: 180px;
   overflow: hidden;
-  border: 2px solid rgba(255,255,255,.9);
+  border: 4px solid #57dff4;
   border-radius: 25px;
   padding: 18px 30px;
   background:
     linear-gradient(112deg, rgba(4,76,143,.96) 0%, rgba(6,139,187,.91) 46%, rgba(180,237,252,.88) 74%, rgba(238,250,255,.97) 100%);
-  box-shadow: inset 0 0 0 3px rgba(5,71,133,.45), inset 0 0 24px rgba(46,215,241,.28), 0 14px 32px rgba(3,70,126,.22);
+  box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 7px rgba(4,62,125,.88), inset 0 0 30px rgba(46,231,255,.38), 0 0 0 2px #e7ad2e, 0 15px 34px rgba(2,53,108,.34);
 }
 .hero::before { content: ""; position: absolute; inset: 7px; border: 1px solid rgba(118,234,251,.65); border-radius: 18px; pointer-events: none; }
 .hero-text { position: relative; z-index: 1; }
@@ -64,19 +64,41 @@ button { touch-action: manipulation; }
 .btn-ghost { color: #fff; background: linear-gradient(180deg, #0d65ac, #063b78); border: 2px solid rgba(255,224,132,.85); box-shadow: inset 0 0 0 2px rgba(3,144,195,.5); }
 .btn-ghost b { margin-left: 8px; color: #79efff; }
 
+.month-panel {
+  position: relative;
+  overflow: hidden;
+  margin: 12px 0;
+  border: 3px solid #43d8ee;
+  border-radius: 22px;
+  padding: 43px 10px 10px;
+  background: linear-gradient(180deg, #087db7, #044b87);
+  box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 6px #07508d, 0 0 0 2px #e7ad2e, 0 11px 25px rgba(2,53,108,.26);
+}
+.month-panel-title { position: absolute; top: 6px; left: 24px; display: flex; align-items: center; gap: 7px; border: 2px solid #f1bf4f; border-radius: 0 0 12px 12px; padding: 5px 20px 7px; color: #fff; background: linear-gradient(180deg, #1271bb, #073c7d); font-size: 13px; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; text-shadow: 0 2px 2px #052e64; }
+.month-panel-title span { color: #ffd65e; }
+.month-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 3px 3px 8px; scrollbar-color: #73dff0 rgba(3,57,108,.35); scroll-snap-type: x proximity; }
+.month-tab { position: relative; min-width: 98px; min-height: 72px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; scroll-snap-align: start; border: 2px solid rgba(255,255,255,.72); border-radius: 15px; padding: 6px 8px; color: #fff; background: linear-gradient(145deg, #109bc1, #076399); box-shadow: inset 0 0 0 2px rgba(4,62,118,.32), 0 5px 9px rgba(0,39,83,.24); cursor: pointer; font-size: 11px; font-weight: 900; text-shadow: 0 1px 2px #06406f; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
+.month-tab:hover { transform: translateY(-2px); border-color: #fff4bd; }
+.month-tab.active { border-color: #ffd052; color: #063a76; background: linear-gradient(145deg, #fff, #c9f4ff); box-shadow: inset 0 0 0 2px #fff, 0 0 0 2px #d7950d, 0 7px 13px rgba(0,40,82,.28); text-shadow: none; }
+.month-art { width: 38px; height: 34px; display: grid; place-items: center; border-radius: 11px; background: rgba(255,255,255,.17); font-size: 25px; filter: drop-shadow(0 3px 2px rgba(0,44,81,.25)); }
+.month-tab.active .month-art { background: linear-gradient(145deg, #f7ffff, #aeeaf7); }
+.month-spring .month-art { background-color: rgba(151,234,174,.28); }
+.month-summer .month-art { background-color: rgba(255,219,91,.25); }
+.month-autumn .month-art { background-color: rgba(255,151,74,.25); }
+
 .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin: 0 4px 14px; }
 .section-heading h2 { margin: 0; font-size: clamp(21px, 3vw, 27px); letter-spacing: -.02em; }
 .achievements-section {
   position: relative;
   overflow: hidden;
   margin: 10px 0 14px;
-  border: 2px solid rgba(255,255,255,.9);
+  border: 4px solid #4bdcf1;
   border-radius: 26px;
   padding: 56px 15px 15px;
   background:
     radial-gradient(circle at 15% 0%, rgba(78,227,255,.35), transparent 25%),
     linear-gradient(180deg, rgba(13,141,191,.96), rgba(4,76,136,.98));
-  box-shadow: inset 0 0 0 4px rgba(3,67,126,.6), inset 0 0 25px rgba(44,218,241,.3), 0 15px 34px rgba(3,67,126,.22);
+  box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 7px #064f8e, inset 0 0 29px rgba(44,230,250,.43), 0 0 0 2px #e8ae30, 0 16px 36px rgba(2,54,109,.34);
 }
 .achievements-section::before { content: ""; position: absolute; inset: 7px; border: 1px solid rgba(95,229,249,.65); border-radius: 18px; pointer-events: none; }
 .achievements-heading { position: absolute; top: 9px; left: 30px; z-index: 2; margin: 0; border: 2px solid #f4c55b; border-radius: 0 0 14px 14px; padding: 6px 27px 8px; background: linear-gradient(180deg, #116db5, #073b7c); box-shadow: inset 0 0 0 2px rgba(78,205,235,.52), 0 5px 10px rgba(1,42,84,.24); }
@@ -92,10 +114,10 @@ button { touch-action: manipulation; }
   align-items: center;
   gap: 5px;
   padding: 14px 15px 14px 4px;
-  border: 3px solid rgba(246,193,70,.86);
+  border: 4px solid #f0b733;
   border-radius: 21px;
   background: linear-gradient(145deg, rgba(255,255,255,.99), rgba(222,246,253,.96));
-  box-shadow: inset 0 0 0 2px #fff, inset 0 -12px 24px rgba(7,119,174,.08), 0 8px 16px rgba(1,49,96,.24);
+  box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 5px rgba(41,179,215,.22), inset 0 -14px 26px rgba(7,119,174,.13), 0 9px 18px rgba(1,42,88,.31);
   transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
 }
 .achievement-card::after { content: ""; position: absolute; inset: 5px; z-index: 0; border: 1px solid rgba(51,182,218,.38); border-radius: 14px; pointer-events: none; }
@@ -121,7 +143,7 @@ button { touch-action: manipulation; }
 .group-progress-track { height: 7px; overflow: hidden; margin-top: 9px; border: 1px solid rgba(5,75,137,.22); border-radius: 999px; background: rgba(5,75,137,.1); box-shadow: inset 0 1px 2px rgba(4,58,110,.15); }
 .group-progress-track span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--teal), #70d4cc, var(--gold)); transition: width .4s ease; }
 
-.students-section { overflow: hidden; border: 3px solid #e2ae36; border-radius: 25px; padding: 0 7px 8px; background: linear-gradient(180deg, #087faf, #045083); box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 5px #28b9d1, 0 15px 34px rgba(3,62,112,.24); }
+.students-section { overflow: hidden; border: 4px solid #50dcf0; border-radius: 25px; padding: 0 9px 10px; background: linear-gradient(180deg, #0a9bc4, #034778); box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 7px #07528d, 0 0 0 2px #e7ad2e, 0 17px 37px rgba(2,52,101,.35); }
 .students-heading { min-height: 77px; align-items: center; margin: 0 6px; padding: 10px 16px; }
 .students-heading .eyebrow { margin-bottom: 1px; color: #ffe39a; }
 .students-heading h2 { color: #fff; font-size: 30px; text-shadow: 0 3px 0 #06376f, 0 5px 10px rgba(0,30,70,.3); }
@@ -221,6 +243,11 @@ button { touch-action: manipulation; }
   .tracker-toolbar { margin: 0 0 7px; }
   .tracker-toolbar > span { min-height: 36px; padding: 6px 11px; font-size: 11px; }
   .btn { min-height: 38px; padding: 7px 12px; font-size: 12px; }
+  .month-panel { margin: 10px 0; border-radius: 18px; padding: 40px 7px 7px; }
+  .month-panel-title { top: 5px; left: 16px; padding: 4px 14px 6px; font-size: 11px; }
+  .month-tabs { gap: 6px; padding-bottom: 6px; }
+  .month-tab { min-width: 82px; min-height: 64px; border-radius: 13px; font-size: 10px; }
+  .month-art { width: 32px; height: 29px; font-size: 21px; }
   .hero { grid-template-columns: 1fr minmax(125px, .7fr); min-height: 145px; border-radius: 20px; padding: 14px 16px; }
   .hero h1 { font-size: 26px; }
   .hero .tag { margin-top: 8px; font-size: 13px; }
