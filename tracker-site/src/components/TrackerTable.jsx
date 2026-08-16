@@ -4,13 +4,13 @@ import LoadingState from './LoadingState'
 import ErrorState from './ErrorState'
 import StudentRow from './StudentRow'
 
-export default function TrackerTable() {
+export default function TrackerTable({ group }) {
   const [students, setStudents] = useState(null)
   const [error, setError] = useState(null)
   const [homeworkLabels, setHomeworkLabels] = useState(DEFAULT_HOMEWORK_LABELS)
 
   useEffect(() => {
-    const unsub = subscribeStudents((list) => {
+    const unsub = subscribeStudents(group.id, (list) => {
       setStudents(list)
       setError(null)
     }, (e) => {
@@ -18,12 +18,12 @@ export default function TrackerTable() {
       setError('Unable to load data. Please try later.')
     })
     return () => unsub()
-  }, [])
+  }, [group.id])
 
   useEffect(() => {
-    const unsub = subscribeHomeworkLabels(setHomeworkLabels, (e) => console.error('Homework labels error', e))
+    const unsub = subscribeHomeworkLabels(group.id, setHomeworkLabels, (e) => console.error('Homework labels error', e))
     return () => unsub()
-  }, [])
+  }, [group.id])
 
   if (error) return <ErrorState message={error} />
   if (students === null) return <LoadingState />
@@ -31,7 +31,7 @@ export default function TrackerTable() {
 
   return (
     <section className="card students-card">
-      <h3 className="card-title">Group Gr1</h3>
+      <h3 className="card-title">{group.name}</h3>
       <div className="card-body">
         <div className="table-wrap">
           <table className="tracker">
