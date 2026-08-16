@@ -2,7 +2,7 @@ export const GROUPS = Array.from({ length: 6 }, (_, index) => {
   const number = index + 1
   return {
     id: `Gr${number}`,
-    name: `Группа ${number}`,
+    name: `Group Gr${number}`,
     accountEmail: `group${number}@english-tracker.local`,
   }
 })
