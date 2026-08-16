@@ -72,10 +72,12 @@ export default function StudentRow({ student, labels, groupId, achievementData }
           </div>
           <div className="profile-meta"><span className={`level-badge level-${stats.level.toLowerCase().replace(' ', '-')}`}>{stats.level}</span><span className="xp-label">{stats.xp} XP</span></div>
           <div className="personal-progress" aria-label={`${stats.progress}% of available XP`}><span style={{ width: `${stats.progress}%` }} /></div>
-          <div className="reward-list" aria-label="Earned rewards">
-            {rewards.length ? rewards.map((reward) => <RewardBadge key={reward.id} reward={reward} />) : <span className="no-rewards">Next reward ahead</span>}
+          <div className="student-achievement-row">
+            <div className="reward-list" aria-label="Earned rewards">
+              {rewards.length ? rewards.map((reward) => <RewardBadge key={reward.id} reward={reward} />) : <span className="no-rewards">Next reward ahead</span>}
+            </div>
+            <ProgressRoute scores={stats.scores} />
           </div>
-          <ProgressRoute scores={stats.scores} />
         </div>
       </div>
     </th>
