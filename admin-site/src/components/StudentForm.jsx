@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-export default function StudentForm({ initial = {}, onSubmit, submitLabel='Сохранить', onCancel }){
+export default function StudentForm({ initial = {}, onSubmit, submitLabel='Сохранить', onCancel, labels = [] }){
   const [name, setName] = useState(initial.name || '')
   const [hw1, setHw1] = useState(initial.hw1 ?? 0)
   const [hw2, setHw2] = useState(initial.hw2 ?? 0)
@@ -23,11 +23,11 @@ export default function StudentForm({ initial = {}, onSubmit, submitLabel='Со�
     <form className="card form" onSubmit={submit}>
       <label>Name<input value={name} onChange={e=>setName(e.target.value)} /></label>
       <div className="hw-row">
-        <label>Homework 1<input type="number" value={hw1} onChange={e=>setHw1(Number(e.target.value))} /></label>
-        <label>Homework 2<input type="number" value={hw2} onChange={e=>setHw2(Number(e.target.value))} /></label>
-        <label>Homework 3<input type="number" value={hw3} onChange={e=>setHw3(Number(e.target.value))} /></label>
-        <label>Homework 4<input type="number" value={hw4} onChange={e=>setHw4(Number(e.target.value))} /></label>
-        <label>Homework 5<input type="number" value={hw5} onChange={e=>setHw5(Number(e.target.value))} /></label>
+        <label>{labels[0] || 'Homework 1'}<input type="number" value={hw1} onChange={e=>setHw1(Number(e.target.value))} /></label>
+        <label>{labels[1] || 'Homework 2'}<input type="number" value={hw2} onChange={e=>setHw2(Number(e.target.value))} /></label>
+        <label>{labels[2] || 'Homework 3'}<input type="number" value={hw3} onChange={e=>setHw3(Number(e.target.value))} /></label>
+        <label>{labels[3] || 'Homework 4'}<input type="number" value={hw4} onChange={e=>setHw4(Number(e.target.value))} /></label>
+        <label>{labels[4] || 'Homework 5'}<input type="number" value={hw5} onChange={e=>setHw5(Number(e.target.value))} /></label>
       </div>
       <div className="actions">
         <button type="submit" className="btn-add" disabled={saving}>{saving ? 'Saving...' : submitLabel}</button>
