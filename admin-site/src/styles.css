@@ -70,6 +70,7 @@ body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;back
 .group-access-fields input{box-sizing:border-box;width:100%;margin-top:5px;padding:9px 10px;border:1px solid #cbd8e6;border-radius:8px}
 .group-access-message{width:100%;font-size:13px;color:#334155}
 .group-access-status{background:#fff;padding:12px 16px;border-radius:12px;margin-bottom:12px;color:#64748b}
+.group-access-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:8px}
 .group-access-ready{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#047857;font-weight:700;border:1px solid #a7f3d0}
 .modal{position:fixed;left:0;top:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,0.35)}
 .modal .card{max-width:640px;width:100%}

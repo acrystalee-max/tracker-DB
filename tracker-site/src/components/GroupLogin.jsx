@@ -13,7 +13,18 @@ export default function GroupLogin({ group, accessError = '', onAttempt }) {
     setError('')
     onAttempt?.()
     try {
-      await signInWithEmailAndPassword(auth, group.accountEmail, password)
+      let credential = null
+      let lastError = null
+      for (const email of group.accountEmails) {
+        try {
+          credential = await signInWithEmailAndPassword(auth, email, password)
+          break
+        } catch (loginError) {
+          lastError = loginError
+          if (loginError.code !== 'auth/invalid-credential' && loginError.code !== 'auth/wrong-password' && loginError.code !== 'auth/user-not-found') throw loginError
+        }
+      }
+      if (!credential) throw lastError || new Error('No matching group account')
     } catch (loginError) {
       console.error('Group login error', loginError)
       setError('Incorrect password. Check it and try again.')
