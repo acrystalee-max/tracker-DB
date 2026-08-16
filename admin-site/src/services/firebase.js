@@ -2,7 +2,7 @@ import { getApps, initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
 import { getAuth } from 'firebase/auth'
 
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'AIzaSyBZ-XKibb7tY8WHdr6qoxOjL1xfjhDf3Ko',
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || 'tracker-gr1.firebaseapp.com',
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || 'tracker-gr1',

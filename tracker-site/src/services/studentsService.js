@@ -1,9 +1,9 @@
 import { collection, doc, onSnapshot, query } from 'firebase/firestore'
 import { db } from './firebase'
 
-const GROUP = import.meta.env.VITE_FIREBASE_GROUP_COLLECTION || 'Gr1'
 const SETTINGS_ID = 'trackerSettings'
 const MAX_HOMEWORKS = 10
+const VALID_GROUPS = new Set(['Gr1', 'Gr2', 'Gr3', 'Gr4', 'Gr5', 'Gr6'])
 export const DEFAULT_HOMEWORK_LABELS = [1, 2, 3, 4, 5].map((n) => `Homework ${n}`)
 
 function normalizeHomeworkLabels(labels) {
@@ -13,8 +13,12 @@ function normalizeHomeworkLabels(labels) {
   })
 }
 
-export function subscribeStudents(onUpdate, onError) {
-  const q = query(collection(db, GROUP))
+function safeGroup(groupId) {
+  return VALID_GROUPS.has(groupId) ? groupId : 'Gr1'
+}
+
+export function subscribeStudents(groupId, onUpdate, onError) {
+  const q = query(collection(db, safeGroup(groupId)))
   return onSnapshot(q, (snapshot) => {
     const students = []
     snapshot.forEach((doc) => {
@@ -25,8 +29,8 @@ export function subscribeStudents(onUpdate, onError) {
   }, onError)
 }
 
-export function subscribeHomeworkLabels(onUpdate, onError) {
-  return onSnapshot(doc(db, GROUP, SETTINGS_ID), (snapshot) => {
+export function subscribeHomeworkLabels(groupId, onUpdate, onError) {
+  return onSnapshot(doc(db, safeGroup(groupId), SETTINGS_ID), (snapshot) => {
     const saved = snapshot.exists() ? snapshot.data().homeworkLabels : null
     onUpdate(normalizeHomeworkLabels(saved))
   }, onError)

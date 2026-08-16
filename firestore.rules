@@ -4,12 +4,32 @@ service cloud.firestore {
   match /databases/{database}/documents {
     function isOwner() {
       return request.auth != null
-        && request.auth.uid == "ВСТАВИТЬ_UID_ВЛАДЕЛЬЦА";
+        && request.auth.uid == "Yic6ABeP1jY9WtQ5SatIgmz3vEk2";
     }
 
-    match /Gr1/{studentId} {
-      allow read: if true;
+    function isTrackerGroup(groupId) {
+      return groupId == 'Gr1' || groupId == 'Gr2' || groupId == 'Gr3'
+        || groupId == 'Gr4' || groupId == 'Gr5' || groupId == 'Gr6';
+    }
+
+    function hasGroupAccess(groupId) {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/groupAccess/$(request.auth.uid))
+        && get(/databases/$(database)/documents/groupAccess/$(request.auth.uid)).data.groupId == groupId;
+    }
+
+    match /{groupId}/{documentId} {
+      allow read: if isTrackerGroup(groupId) && (isOwner() || hasGroupAccess(groupId));
       allow create, update, delete: if isOwner();
+    }
+
+    match /groupAccess/{uid} {
+      allow read: if request.auth != null && (request.auth.uid == uid || isOwner());
+      allow create, update, delete: if isOwner();
+    }
+
+    match /groupDirectory/{groupId} {
+      allow read, create, update, delete: if isOwner();
     }
   }
 }
