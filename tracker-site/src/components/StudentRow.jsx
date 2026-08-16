@@ -6,7 +6,7 @@ function Badge({ value }){
   return <span className={cls}>{v}</span>
 }
 
-export default function StudentRow({ student, mobile }) {
+export default function StudentRow({ student, labels = [], mobile }) {
   const name = student.name || student.id
   const initial = (name && name[0]) ? name[0].toUpperCase() : '?'
   const hw = [1,2,3,4,5].map((n) => student[`hw${n}`] ?? null)
@@ -21,7 +21,7 @@ export default function StudentRow({ student, mobile }) {
         <div className="student-hw">
           {hw.map((v, i) => (
             <div key={i} className="hw-item">
-              <div className="hw-label">Homework {i+1}</div>
+              <div className="hw-label">{labels[i] || `Homework ${i+1}`}</div>
               <Badge value={v} />
             </div>
           ))}
