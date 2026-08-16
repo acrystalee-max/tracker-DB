@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { subscribeStudents, subscribeHomeworkLabels, updateHomeworkLabels, DEFAULT_HOMEWORK_LABELS, createStudent, updateStudent, deleteStudent } from '../services/studentsService'
+import { subscribeStudents, subscribeHomeworkLabels, updateHomeworkLabels, DEFAULT_HOMEWORK_LABELS, MAX_HOMEWORKS, createStudent, updateStudent, deleteStudent } from '../services/studentsService'
 import StudentForm from './StudentForm'
 
 function HomeworkLabelsEditor({ labels, onSave }){
@@ -18,6 +18,11 @@ function HomeworkLabelsEditor({ labels, onSave }){
     }
   }
 
+  function addHomework(){
+    if(draft.length >= MAX_HOMEWORKS) return
+    setDraft([...draft, `Homework ${draft.length + 1}`])
+  }
+
   return (
     <form className="card homework-labels" onSubmit={submit}>
       <div className="homework-labels-title">Названия домашних заданий</div>
@@ -33,9 +38,14 @@ function HomeworkLabelsEditor({ labels, onSave }){
           </label>
         ))}
       </div>
-      <button type="submit" className="btn btn-primary" disabled={saving}>
-        {saving ? 'Сохраняю...' : 'Сохранить названия'}
-      </button>
+      <div className="homework-label-actions">
+        <button type="button" className="btn btn-info" onClick={addHomework} disabled={draft.length >= MAX_HOMEWORKS}>
+          {draft.length >= MAX_HOMEWORKS ? 'Добавлено 10 домашних работ' : '+ Добавить домашнюю работу'}
+        </button>
+        <button type="submit" className="btn btn-primary" disabled={saving}>
+          {saving ? 'Сохраняю...' : 'Сохранить названия'}
+        </button>
+      </div>
     </form>
   )
 }
@@ -44,6 +54,7 @@ export default function StudentsEditor({ user }){
   const [students, setStudents] = useState(null)
   const [error, setError] = useState(null)
   const [editing, setEditing] = useState(null)
+  const [adding, setAdding] = useState(false)
   const [homeworkLabels, setHomeworkLabels] = useState(DEFAULT_HOMEWORK_LABELS)
   const adminUid = import.meta.env.VITE_FIREBASE_ADMIN_UID || 'Yic6ABeP1jY9WtQ5SatIgmz3vEk2'
 
@@ -61,6 +72,7 @@ export default function StudentsEditor({ user }){
 
   async function handleCreate(data){
     await createStudent(data)
+    setAdding(false)
   }
 
   async function handleUpdate(id, data){
@@ -80,21 +92,26 @@ export default function StudentsEditor({ user }){
     <div>
       {!canEdit && <div className="notice">У вас нет доступа к редактированию.</div>}
       {canEdit && <HomeworkLabelsEditor labels={homeworkLabels} onSave={updateHomeworkLabels} />}
-      {canEdit && <StudentForm labels={homeworkLabels} onSubmit={handleCreate} submitLabel="Добавить" />}
-      <table className="tracker">
+      {canEdit && <div className="student-create-controls">
+        <button type="button" className="btn btn-primary" onClick={()=>setAdding(!adding)}>
+          {adding ? 'Закрыть форму' : '+ Добавить ученика'}
+        </button>
+      </div>}
+      {canEdit && adding && <StudentForm labels={homeworkLabels} onSubmit={handleCreate} submitLabel="Добавить ученика" onCancel={()=>setAdding(false)} />}
+      <div className="table-wrap"><table className="tracker">
         <thead><tr><th>Name</th>{homeworkLabels.map((label, index)=><th key={index}>{label}</th>)}<th>Actions</th></tr></thead>
         <tbody>
           {students.map(s=> (
             <tr key={s.id}>
               <td>{s.name || s.id}</td>
-              {[1,2,3,4,5].map(n=><td key={n}>{s[`hw${n}`] ?? '-'}</td>)}
+              {homeworkLabels.map((_, index)=><td key={index}>{s[`hw${index + 1}`] ?? '-'}</td>)}
               <td>
-                {canEdit && <><button className="btn-edit" onClick={()=>setEditing(s)}>Edit</button><button className="btn-delete" onClick={()=>handleDelete(s.id)}>Delete</button></>}
+                {canEdit && <><button className="btn-edit" onClick={()=>setEditing(s)}>Изменить</button><button className="btn-delete" onClick={()=>handleDelete(s.id)}>Удалить</button></>}
               </td>
             </tr>
           ))}
         </tbody>
-      </table>
+      </table></div>
       {editing && <div className="modal"><StudentForm labels={homeworkLabels} initial={editing} onSubmit={(data)=>handleUpdate(editing.id,data)} submitLabel="Сохранить" onCancel={()=>setEditing(null)} /></div>}
     </div>
   )
