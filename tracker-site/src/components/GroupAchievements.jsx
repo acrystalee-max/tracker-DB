@@ -1,10 +1,14 @@
 import React from 'react'
+import HomeworkArtifact from '../assets/achievement-game/homework-artifact.webp'
+import StarPlatform from '../assets/achievement-game/star-energy-platform.webp'
+import ProgressRocket from '../assets/achievement-game/progress-rocket-gauge.webp'
+import LeaderCrown from '../assets/achievement-game/leader-crown-pedestal.webp'
 
 const cards = [
-  { key: 'totalCompleted', label: 'Homework Completed', caption: 'Great start!', icon: '✓', tone: 'completed' },
-  { key: 'totalStars', label: 'Stars Earned', caption: 'Keep collecting stars!', icon: '★', tone: 'stars' },
-  { key: 'groupProgress', label: 'Group Progress', icon: '↗', tone: 'progress' },
-  { key: 'currentLeader', label: 'Current Leader', caption: 'Top XP this month', icon: '♛', tone: 'leader' },
+  { key: 'totalCompleted', label: 'Homework Completed', caption: 'Great start!', image: HomeworkArtifact, tone: 'completed' },
+  { key: 'totalStars', label: 'Stars Earned', caption: 'Keep collecting stars!', image: StarPlatform, tone: 'stars' },
+  { key: 'groupProgress', label: 'Group Progress', image: ProgressRocket, tone: 'progress' },
+  { key: 'currentLeader', label: 'Current Leader', caption: 'Top XP this month', image: LeaderCrown, tone: 'leader' },
 ]
 
 export default function GroupAchievements({ summary }) {
@@ -16,22 +20,19 @@ export default function GroupAchievements({ summary }) {
     <div className="section-heading achievements-heading">
       <div>
         <p className="eyebrow">Monthly overview</p>
-        <h2 id="group-achievements-title">Group Achievements This Month</h2>
+        <h2 id="group-achievements-title">Monthly Overview</h2>
       </div>
     </div>
     <div className="achievement-grid">
-      {cards.map(({ key, label, caption, icon, tone }) => {
+      {cards.map(({ key, label, caption, image, tone }) => {
         const isProgress = key === 'groupProgress'
         const isLeader = key === 'currentLeader'
         const value = isProgress ? `${progress}%` : isLeader ? leader : summary[key]
 
         return <article className={`achievement-card achievement-card-${tone}`} key={key}>
-          <span className="achievement-icon" aria-hidden="true">
-            {isLeader ? <span className="leader-avatar">{leaderInitial}</span> : icon}
-            {tone === 'stars' && <span className="star-sparkles"><i>✦</i><i>✦</i><i>✦</i></span>}
-            {isLeader && <span className="leader-crown">♛</span>}
-          </span>
+          <span className="achievement-art" aria-hidden="true"><img src={image} alt="" /></span>
           <div className="achievement-copy">
+            {isLeader && <span className="leader-mini"><span>{leaderInitial}</span> Leader</span>}
             <strong title={isLeader ? leader : undefined}>{value}</strong>
             <span className="achievement-label">{label}</span>
             {isProgress && <div className="group-progress-track" aria-label={`Group progress: ${progress}%`}>

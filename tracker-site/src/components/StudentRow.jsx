@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import RewardBadge from './RewardBadge'
 import { getRewards } from '../utils/achievements.mjs'
+import RewardChest from '../assets/achievement-game/reward-chest.webp'
+import LeaderCrown from '../assets/achievement-game/leader-crown-pedestal.webp'
 
 function ScoreBadge({ value, maxScore, animate }) {
   const score = Number(value) || 0
@@ -15,9 +17,11 @@ function ProgressRoute({ scores }) {
   const completed = scores.filter((score) => score > 0).length
   const currentIndex = completed >= scores.length ? -1 : scores.findIndex((score) => score === 0)
   return <div className="progress-route" aria-label={`${completed} of ${scores.length} assignments completed`}>
-    <span className="route-line" aria-hidden="true" />
-    {scores.map((score, index) => <span key={index} className={`route-dot${score > 0 ? ' complete' : ''}${index === currentIndex ? ' current' : ''}`} aria-hidden="true" />)}
-    {scores.length > 0 && completed === scores.length && <span className="route-medal" aria-label="All assignments completed">●</span>}
+    <span className="route-track" aria-hidden="true">
+      <span className="route-line" />
+      {scores.map((score, index) => <span key={index} className={`route-dot${score > 0 ? ' complete' : ''}${index === currentIndex ? ' current' : ''}`} />)}
+    </span>
+    <span className={`route-chest${scores.length > 0 && completed === scores.length ? ' is-earned' : ''}`} aria-hidden="true"><img src={RewardChest} alt="" /></span>
   </div>
 }
 
@@ -63,7 +67,7 @@ export default function StudentRow({ student, labels, groupId, achievementData }
           <div className="name-line">
             <span className="name-text">{name}</span>
             {isStudentOfMonth && <span className={`month-medal${animateMedal ? ' medal-arrival' : ''}`} aria-label="Student of the Month">
-              <span aria-hidden="true">🏅</span>{animateMedal && <span className="medal-particles" aria-hidden="true"><i /><i /><i /></span>}
+              <img src={LeaderCrown} alt="" aria-hidden="true" />{animateMedal && <span className="medal-particles" aria-hidden="true"><i /><i /><i /></span>}
             </span>}
           </div>
           <div className="profile-meta"><span className={`level-badge level-${stats.level.toLowerCase().replace(' ', '-')}`}>{stats.level}</span><span className="xp-label">{stats.xp} XP</span></div>

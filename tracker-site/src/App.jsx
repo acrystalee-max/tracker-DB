@@ -50,6 +50,7 @@ export default function App() {
 
   return (
     <div className="app">
+      <div className="tracker-toolbar"><span><i aria-hidden="true" />Viewing {group.name}</span><button type="button" className="btn btn-ghost" onClick={()=>signOut(auth)}>Sign out <b aria-hidden="true">↗</b></button></div>
       <header className="hero">
         <div className="hero-text">
           <p className="hero-kicker">Welcome to {group.name}</p>
@@ -61,7 +62,6 @@ export default function App() {
         </div>
       </header>
       <main>
-        <div className="tracker-toolbar"><span>Viewing {group.name}</span><button type="button" className="btn btn-ghost" onClick={()=>signOut(auth)}>Sign out</button></div>
         <TrackerTable group={group} />
       </main>
       
