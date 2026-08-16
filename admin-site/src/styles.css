@@ -19,6 +19,10 @@ body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;back
 .form label{display:block;margin-bottom:8px}
 .hw-row{display:flex;gap:12px}
 .hw-row label{flex:1}
+.form input,.homework-labels input{box-sizing:border-box;width:100%;margin-top:5px;padding:9px 10px;border:1px solid #cbd8e6;border-radius:8px;color:var(--deep-navy);background:#fff}
+.homework-labels-title{font-size:17px;font-weight:700;margin-bottom:12px}
+.homework-labels-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.homework-labels-grid label{font-size:12px;font-weight:600}
 .actions{margin-top:12px;display:flex;gap:8px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:700;transition:transform .18s cubic-bezier(.2,.9,.2,1),box-shadow .18s ease,opacity .12s ease;position:relative;overflow:hidden;z-index:0}
 .btn:focus{outline:none;box-shadow:0 8px 24px rgba(16,42,67,0.12),0 0 0 4px rgba(16,42,67,0.06)}
@@ -45,5 +49,6 @@ body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;back
 
 @media (max-width:720px){
 	.hw-row{flex-direction:column}
+	.homework-labels-grid{grid-template-columns:1fr}
 	.corgi-small{width:40px}
 }
