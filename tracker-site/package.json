@@ -6,7 +6,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "optimize-image": "node scripts/optimize-image.js"
+    "optimize-image": "node scripts/optimize-image.js",
+    "check:achievements": "node scripts/check-achievements.mjs"
   },
   "dependencies": {
     "firebase": "^10.11.0",
