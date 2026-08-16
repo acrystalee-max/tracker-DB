@@ -52,12 +52,36 @@ export function subscribeHomeworkLabels(groupId, monthId, onUpdate, onError){
   }, onError)
 }
 
+export function subscribeHomeworkLink(groupId, monthId, onUpdate, onError){
+  const ref = doc(db, safeGroup(groupId), settingsId(monthId))
+  return onSnapshot(ref, (snapshot)=>{
+    const saved = snapshot.exists() ? String(snapshot.data().homeworkUrl || '').trim() : ''
+    onUpdate(/^https?:\/\//i.test(saved) ? saved : '')
+  }, onError)
+}
+
 export async function updateHomeworkLabels(groupId, monthId, labels){
   const normalized = normalizeHomeworkLabels(labels)
   return setDoc(doc(db, safeGroup(groupId), settingsId(monthId)), {
     type: 'settings',
     monthId: safeMonth(monthId),
     homeworkLabels: normalized,
+    updatedAt: serverTimestamp(),
+  }, { merge: true })
+}
+
+export async function updateHomeworkLink(groupId, monthId, value){
+  const trimmed = String(value || '').trim()
+  let homeworkUrl = deleteField()
+  if(trimmed){
+    const parsed = new URL(trimmed)
+    if(parsed.protocol !== 'http:' && parsed.protocol !== 'https:') throw new Error('Enter a full link beginning with https://')
+    homeworkUrl = parsed.toString()
+  }
+  return setDoc(doc(db, safeGroup(groupId), settingsId(monthId)), {
+    type: 'settings',
+    monthId: safeMonth(monthId),
+    homeworkUrl,
     updatedAt: serverTimestamp(),
   }, { merge: true })
 }

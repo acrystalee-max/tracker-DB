@@ -23,6 +23,9 @@ body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;back
 .homework-labels-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:14px}
 .homework-labels-grid label{font-size:12px;font-weight:600}
 .homework-label-actions{display:flex;flex-wrap:wrap;gap:10px}
+.homework-link-editor{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.homework-link-editor label{flex:1;min-width:260px;font-size:12px;font-weight:700}
+.homework-link-editor input{box-sizing:border-box;width:100%;margin-top:5px;padding:9px 10px;border:1px solid #cbd8e6;border-radius:8px;color:var(--deep-navy);background:#fff}
 .student-create-controls{display:flex;justify-content:flex-end;margin:16px 0 12px}
 .table-wrap{width:100%;overflow-x:auto}
 .tracker{min-width:760px}

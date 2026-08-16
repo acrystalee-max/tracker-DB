@@ -50,3 +50,10 @@ export function subscribeHomeworkLabels(groupId, monthId, onUpdate, onError) {
     onUpdate(normalizeHomeworkLabels(saved))
   }, onError)
 }
+
+export function subscribeHomeworkLink(groupId, monthId, onUpdate, onError) {
+  return onSnapshot(doc(db, safeGroup(groupId), settingsId(monthId)), (snapshot) => {
+    const saved = snapshot.exists() ? String(snapshot.data().homeworkUrl || '').trim() : ''
+    onUpdate(/^https?:\/\//i.test(saved) ? saved : '')
+  }, onError)
+}
