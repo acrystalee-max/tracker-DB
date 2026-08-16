@@ -12,7 +12,7 @@ export default function App() {
   const [user, setUser] = useState(null)
   const [authorized, setAuthorized] = useState(false)
   const [checking, setChecking] = useState(true)
-  const adminUid = import.meta.env.VITE_FIREBASE_ADMIN_UID || 'Yic6ABeP1jY9WtQ5SatIgmz3vEk2'
+  const adminUid = import.meta.env.VITE_FIREBASE_ADMIN_UID || 'Yic6ABePljY9WtQ5SatIgmz3vEk2'
 
   useEffect(() => {
     return onAuthStateChanged(auth, async (currentUser) => {
@@ -45,23 +45,23 @@ export default function App() {
     })
   }, [adminUid, group.id])
 
-  if (checking) return <div className="app"><div className="loading">Проверяю доступ...</div></div>
+  if (checking) return <div className="app"><div className="loading">Checking access...</div></div>
   if (!user || !authorized) return <div className="app"><GroupLogin group={group} /></div>
 
   return (
     <div className="app">
       <header className="hero">
         <div className="hero-text">
-          <h1>English Homework Tracker</h1>
-          <h2>Welcome to {group.name}</h2>
-          <p className="tag">Learn, practise and make progress!</p>
+          <p className="hero-kicker">Welcome to {group.name}</p>
+          <h1>Achievement Academy</h1>
+          <p className="tag">Complete your homework, earn XP and unlock rewards!</p>
         </div>
         <div className="hero-illustration">
           <img src={Corgi} alt="Corgi mascot" className="corgi-png" loading="lazy" />
         </div>
       </header>
       <main>
-        <div className="tracker-toolbar"><span>Открыта {group.name.toLowerCase()}</span><button type="button" className="btn btn-ghost" onClick={()=>signOut(auth)}>Выйти</button></div>
+        <div className="tracker-toolbar"><span>Viewing {group.name}</span><button type="button" className="btn btn-ghost" onClick={()=>signOut(auth)}>Sign out</button></div>
         <TrackerTable group={group} />
       </main>
       

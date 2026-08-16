@@ -1,5 +1,5 @@
 import { db } from './firebase'
-import { collection, doc, setDoc, deleteDoc, getDoc, addDoc, serverTimestamp, updateDoc, onSnapshot, query } from 'firebase/firestore'
+import { collection, doc, setDoc, deleteDoc, deleteField, getDoc, addDoc, serverTimestamp, updateDoc, onSnapshot, query } from 'firebase/firestore'
 
 const SETTINGS_ID = 'trackerSettings'
 const VALID_GROUPS = new Set(['Gr1', 'Gr2', 'Gr3', 'Gr4', 'Gr5', 'Gr6'])
@@ -53,6 +53,9 @@ export async function createStudent(groupId, data){
   const payload = {
     name: data.name.trim(),
     ...homework,
+    homeworkCompletedAt: Object.fromEntries(
+      Object.entries(homework).filter(([, value])=>Number(value) > 0).map(([key])=>[key, serverTimestamp()])
+    ),
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   }
@@ -62,7 +65,17 @@ export async function createStudent(groupId, data){
 
 export async function updateStudent(groupId, id, data){
   const ref = doc(db, safeGroup(groupId), id)
-  return updateDoc(ref, { ...data, updatedAt: serverTimestamp() })
+  const previousSnapshot = await getDoc(ref)
+  const previous = previousSnapshot.exists() ? previousSnapshot.data() : {}
+  const updates = { ...data, updatedAt: serverTimestamp() }
+  Object.entries(data).forEach(([key, value])=>{
+    if(!/^hw([1-9]|10)$/.test(key)) return
+    const oldScore = Number(previous[key]) || 0
+    const newScore = Number(value) || 0
+    if(oldScore <= 0 && newScore > 0) updates[`homeworkCompletedAt.${key}`] = serverTimestamp()
+    if(oldScore > 0 && newScore <= 0) updates[`homeworkCompletedAt.${key}`] = deleteField()
+  })
+  return updateDoc(ref, updates)
 }
 
 export async function deleteStudent(groupId, id){

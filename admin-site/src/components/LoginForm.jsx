@@ -15,18 +15,18 @@ export default function LoginForm(){
       await signInWithEmail(email, password)
     }catch(e){
       console.error(e)
-      setError('Не удалось войти. Проверьте email и пароль.')
+      setError('Unable to sign in. Check your email and password.')
     }finally{setLoading(false)}
   }
 
   return (
     <div className="card">
-      <h3>Вход в админ-панель</h3>
+      <h3>Admin sign in</h3>
       {error && <div className="error">{error}</div>}
       <form onSubmit={handleLogin}>
-        <label>Электронная почта<input value={email} onChange={e=>setEmail(e.target.value)} type="email" required /></label>
-        <label>Пароль<input value={password} onChange={e=>setPassword(e.target.value)} type="password" required /></label>
-        <button type="submit" disabled={loading}>{loading ? 'Вход...' : 'Войти'}</button>
+        <label>Email<input value={email} onChange={e=>setEmail(e.target.value)} type="email" required /></label>
+        <label>Password<input value={password} onChange={e=>setPassword(e.target.value)} type="password" required /></label>
+        <button type="submit" disabled={loading}>{loading ? 'Signing in...' : 'Sign in'}</button>
       </form>
     </div>
   )
