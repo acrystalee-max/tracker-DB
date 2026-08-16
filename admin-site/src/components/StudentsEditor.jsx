@@ -50,7 +50,7 @@ function HomeworkLabelsEditor({ labels, onSave }){
   )
 }
 
-export default function StudentsEditor({ user }){
+export default function StudentsEditor({ user, groupId }){
   const [students, setStudents] = useState(null)
   const [error, setError] = useState(null)
   const [editing, setEditing] = useState(null)
@@ -59,30 +59,34 @@ export default function StudentsEditor({ user }){
   const adminUid = import.meta.env.VITE_FIREBASE_ADMIN_UID || 'Yic6ABeP1jY9WtQ5SatIgmz3vEk2'
 
   useEffect(()=>{
-    const unsub = subscribeStudents((list)=>{ setStudents(list); setError(null) }, (e)=>{ console.error(e); setError('Ошибка загрузки') })
+    setStudents(null)
+    setEditing(null)
+    setAdding(false)
+    const unsub = subscribeStudents(groupId, (list)=>{ setStudents(list); setError(null) }, (e)=>{ console.error(e); setError('Ошибка загрузки') })
     return unsub
-  },[])
+  },[groupId])
 
   useEffect(()=>{
-    const unsub = subscribeHomeworkLabels(setHomeworkLabels, (e)=>console.error('Ошибка загрузки названий', e))
+    setHomeworkLabels(DEFAULT_HOMEWORK_LABELS)
+    const unsub = subscribeHomeworkLabels(groupId, setHomeworkLabels, (e)=>console.error('Ошибка загрузки названий', e))
     return unsub
-  },[])
+  },[groupId])
 
   const canEdit = user && adminUid && user.uid === adminUid
 
   async function handleCreate(data){
-    await createStudent(data)
+    await createStudent(groupId, data)
     setAdding(false)
   }
 
   async function handleUpdate(id, data){
-    await updateStudent(id, data)
+    await updateStudent(groupId, id, data)
     setEditing(null)
   }
 
   async function handleDelete(id){
     if(!confirm('Удалить ученика?')) return
-    await deleteStudent(id)
+    await deleteStudent(groupId, id)
   }
 
   if (error) return <div className="error">{error}</div>
@@ -91,7 +95,7 @@ export default function StudentsEditor({ user }){
   return (
     <div>
       {!canEdit && <div className="notice">У вас нет доступа к редактированию.</div>}
-      {canEdit && <HomeworkLabelsEditor labels={homeworkLabels} onSave={updateHomeworkLabels} />}
+      {canEdit && <HomeworkLabelsEditor labels={homeworkLabels} onSave={(labels)=>updateHomeworkLabels(groupId, labels)} />}
       {canEdit && <div className="student-create-controls">
         <button type="button" className="btn btn-primary" onClick={()=>setAdding(!adding)}>
           {adding ? 'Закрыть форму' : '+ Добавить ученика'}
