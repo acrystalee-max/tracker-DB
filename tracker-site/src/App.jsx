@@ -3,15 +3,19 @@ import { doc, getDoc } from 'firebase/firestore'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import TrackerTable from './components/TrackerTable'
 import GroupLogin from './components/GroupLogin'
+import MonthTabs from './components/MonthTabs'
 import Corgi from './assets/london-corgi.webp'
 import { auth, db } from './services/firebase'
 import { getRequestedGroup } from './config/groups'
+import { getInitialMonth } from './config/months'
 
 export default function App() {
   const group = getRequestedGroup()
   const [user, setUser] = useState(null)
   const [authorized, setAuthorized] = useState(false)
   const [checking, setChecking] = useState(true)
+  const [accessError, setAccessError] = useState('')
+  const [monthId, setMonthId] = useState(getInitialMonth)
   const adminUid = import.meta.env.VITE_FIREBASE_ADMIN_UID || 'Yic6ABePljY9WtQ5SatIgmz3vEk2'
 
   useEffect(() => {
@@ -31,22 +35,31 @@ export default function App() {
           allowed = access.exists() && access.data().groupId === group.id
         }
         if (!allowed) {
+          setAccessError('Your password is correct, but this group access needs to be repaired in the Admin panel.')
           await signOut(auth)
           return
         }
+        setAccessError('')
         setUser(currentUser)
         setAuthorized(true)
       } catch (error) {
         console.error('Group access check error', error)
         setAuthorized(false)
+        setAccessError('Unable to verify group access. Please ask your teacher to repair it in the Admin panel.')
       } finally {
         setChecking(false)
       }
     })
   }, [adminUid, group.id])
 
+  useEffect(() => {
+    const url = new URL(window.location.href)
+    url.searchParams.set('month', monthId)
+    window.history.replaceState({}, '', url)
+  }, [monthId])
+
   if (checking) return <div className="app"><div className="loading">Checking access...</div></div>
-  if (!user || !authorized) return <div className="app"><GroupLogin group={group} /></div>
+  if (!user || !authorized) return <div className="app"><GroupLogin group={group} accessError={accessError} onAttempt={() => setAccessError('')} /></div>
 
   return (
     <div className="app">
@@ -62,7 +75,8 @@ export default function App() {
         </div>
       </header>
       <main>
-        <TrackerTable group={group} />
+        <MonthTabs value={monthId} onChange={setMonthId} />
+        <TrackerTable group={group} monthId={monthId} />
       </main>
       
     </div>

@@ -50,7 +50,7 @@ function HomeworkLabelsEditor({ labels, onSave }){
   )
 }
 
-export default function StudentsEditor({ user, groupId }){
+export default function StudentsEditor({ user, groupId, monthId }){
   const [students, setStudents] = useState(null)
   const [error, setError] = useState(null)
   const [editing, setEditing] = useState(null)
@@ -62,25 +62,25 @@ export default function StudentsEditor({ user, groupId }){
     setStudents(null)
     setEditing(null)
     setAdding(false)
-    const unsub = subscribeStudents(groupId, (list)=>{ setStudents(list); setError(null) }, (e)=>{ console.error(e); setError('Unable to load data') })
+    const unsub = subscribeStudents(groupId, monthId, (list)=>{ setStudents(list); setError(null) }, (e)=>{ console.error(e); setError('Unable to load data') })
     return unsub
-  },[groupId])
+  },[groupId, monthId])
 
   useEffect(()=>{
     setHomeworkLabels(DEFAULT_HOMEWORK_LABELS)
-    const unsub = subscribeHomeworkLabels(groupId, setHomeworkLabels, (e)=>console.error('Homework title loading error', e))
+    const unsub = subscribeHomeworkLabels(groupId, monthId, setHomeworkLabels, (e)=>console.error('Homework title loading error', e))
     return unsub
-  },[groupId])
+  },[groupId, monthId])
 
   const canEdit = user && adminUid && user.uid === adminUid
 
   async function handleCreate(data){
-    await createStudent(groupId, data)
+    await createStudent(groupId, monthId, data)
     setAdding(false)
   }
 
   async function handleUpdate(id, data){
-    await updateStudent(groupId, id, data)
+    await updateStudent(groupId, monthId, id, data)
     setEditing(null)
   }
 
@@ -95,7 +95,7 @@ export default function StudentsEditor({ user, groupId }){
   return (
     <div>
       {!canEdit && <div className="notice">You do not have editing access.</div>}
-      {canEdit && <HomeworkLabelsEditor labels={homeworkLabels} onSave={(labels)=>updateHomeworkLabels(groupId, labels)} />}
+      {canEdit && <HomeworkLabelsEditor labels={homeworkLabels} onSave={(labels)=>updateHomeworkLabels(groupId, monthId, labels)} />}
       {canEdit && <div className="student-create-controls">
         <button type="button" className="btn btn-primary" onClick={()=>setAdding(!adding)}>
           {adding ? 'Close form' : '+ Add student'}

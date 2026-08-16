@@ -4,7 +4,9 @@ import { onAuthStateChanged, signOut } from 'firebase/auth'
 import LoginForm from './components/LoginForm'
 import StudentsEditor from './components/StudentsEditor'
 import GroupAccessSetup from './components/GroupAccessSetup'
+import MonthTabs from './components/MonthTabs'
 import { GROUPS, getGroup } from './config/groups'
+import { getCurrentMonthId } from './config/months'
 
 import CorgiSmall from './assets/corgi-small.svg'
 
@@ -12,6 +14,7 @@ export default function App(){
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [selectedGroupId, setSelectedGroupId] = useState('Gr1')
+  const [selectedMonthId, setSelectedMonthId] = useState(getCurrentMonthId)
   const [copyMessage, setCopyMessage] = useState('')
   const selectedGroup = getGroup(selectedGroupId)
 
@@ -55,6 +58,7 @@ export default function App(){
                   <button type="button" className="btn btn-info" onClick={async()=>{
                     const url = new URL('../tracker/', window.location.href)
                     url.searchParams.set('group', selectedGroup.id)
+                    url.searchParams.set('month', selectedMonthId)
                     await navigator.clipboard.writeText(url.toString())
                     setCopyMessage('Link copied')
                   }}>Copy group link</button>
@@ -62,7 +66,8 @@ export default function App(){
                 </div>
               </section>
               <GroupAccessSetup group={selectedGroup} />
-              <StudentsEditor user={user} groupId={selectedGroup.id} />
+              <MonthTabs value={selectedMonthId} onChange={setSelectedMonthId} />
+              <StudentsEditor user={user} groupId={selectedGroup.id} monthId={selectedMonthId} />
             </div>
           ) : (
             <LoginForm />
