@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { subscribeStudents, subscribeHomeworkLabels, updateHomeworkLabels, DEFAULT_HOMEWORK_LABELS, MAX_HOMEWORKS, createStudent, updateStudent, deleteStudent } from '../services/studentsService'
+import { subscribeStudents, subscribeHomeworkLabels, subscribeHomeworkLink, updateHomeworkLabels, updateHomeworkLink, DEFAULT_HOMEWORK_LABELS, MAX_HOMEWORKS, createStudent, updateStudent, deleteStudent } from '../services/studentsService'
 import StudentForm from './StudentForm'
 
 function HomeworkLabelsEditor({ labels, onSave }){
@@ -50,12 +50,47 @@ function HomeworkLabelsEditor({ labels, onSave }){
   )
 }
 
+function HomeworkLinkEditor({ value, onSave }){
+  const [draft, setDraft] = useState(value)
+  const [saving, setSaving] = useState(false)
+  const [message, setMessage] = useState('')
+
+  useEffect(()=>setDraft(value), [value])
+
+  async function submit(event){
+    event.preventDefault()
+    setSaving(true)
+    setMessage('')
+    try{
+      await onSave(draft)
+      setMessage(draft.trim() ? 'Homework link saved' : 'Homework link removed')
+    }catch(error){
+      setMessage(error.message || 'Unable to save the link')
+    }finally{
+      setSaving(false)
+    }
+  }
+
+  return <form className="card homework-link-editor" onSubmit={submit}>
+    <div>
+      <div className="homework-labels-title">Homework link</div>
+      <div className="group-access-help">A separate link is saved for this group and month.</div>
+    </div>
+    <label>Full link
+      <input type="url" value={draft} onChange={(event)=>setDraft(event.target.value)} placeholder="https://..." />
+    </label>
+    <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Saving...' : 'Save homework link'}</button>
+    {message && <span className="copy-message">{message}</span>}
+  </form>
+}
+
 export default function StudentsEditor({ user, groupId, monthId }){
   const [students, setStudents] = useState(null)
   const [error, setError] = useState(null)
   const [editing, setEditing] = useState(null)
   const [adding, setAdding] = useState(false)
   const [homeworkLabels, setHomeworkLabels] = useState(DEFAULT_HOMEWORK_LABELS)
+  const [homeworkLink, setHomeworkLink] = useState('')
   const adminUid = import.meta.env.VITE_FIREBASE_ADMIN_UID || 'Yic6ABePljY9WtQ5SatIgmz3vEk2'
 
   useEffect(()=>{
@@ -64,6 +99,11 @@ export default function StudentsEditor({ user, groupId, monthId }){
     setAdding(false)
     const unsub = subscribeStudents(groupId, monthId, (list)=>{ setStudents(list); setError(null) }, (e)=>{ console.error(e); setError('Unable to load data') })
     return unsub
+  },[groupId, monthId])
+
+  useEffect(()=>{
+    setHomeworkLink('')
+    return subscribeHomeworkLink(groupId, monthId, setHomeworkLink, (e)=>console.error('Homework link loading error', e))
   },[groupId, monthId])
 
   useEffect(()=>{
@@ -95,6 +135,7 @@ export default function StudentsEditor({ user, groupId, monthId }){
   return (
     <div>
       {!canEdit && <div className="notice">You do not have editing access.</div>}
+      {canEdit && <HomeworkLinkEditor value={homeworkLink} onSave={(value)=>updateHomeworkLink(groupId, monthId, value)} />}
       {canEdit && <HomeworkLabelsEditor labels={homeworkLabels} onSave={(labels)=>updateHomeworkLabels(groupId, monthId, labels)} />}
       {canEdit && <div className="student-create-controls">
         <button type="button" className="btn btn-primary" onClick={()=>setAdding(!adding)}>
