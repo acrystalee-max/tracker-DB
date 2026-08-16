@@ -132,6 +132,18 @@ export default function GroupAccessSetup({ group }) {
       <div>
         <div className="group-access-title">{resetMode ? 'Set a new password' : 'Create or repair access'} for {group.name}</div>
         <div className="group-access-help">{resetMode ? 'Choose a new password. You do not need to know the old one.' : 'For an existing group, enter its current password.'} The password is never stored in the database.</div>
+        <button
+          type="button"
+          className="group-access-mode-toggle"
+          onClick={() => {
+            setResetMode((current) => !current)
+            setPassword('')
+            setConfirmation('')
+            setMessage('')
+          }}
+        >
+          {resetMode ? 'Use current password instead' : "Don't know the old password? Set a new one"}
+        </button>
       </div>
       <div className="group-access-fields">
         <label>Password
