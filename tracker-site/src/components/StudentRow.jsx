@@ -1,46 +1,80 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import RewardBadge from './RewardBadge'
+import { getRewards } from '../utils/achievements.mjs'
 
-function Badge({ value }){
-  const v = value === null || value === undefined ? '-' : value
-  const cls = value === 0 || v === '-' ? 'badge badge-empty' : (value === 1 ? 'badge badge-success' : 'badge badge-positive')
-  return <span className={cls}>{v}</span>
+function ScoreBadge({ value, maxScore, animate }) {
+  const score = Number(value) || 0
+  const ratio = maxScore ? score / maxScore : 0
+  const state = score === 0 ? 'empty' : ratio <= 0.5 ? 'low' : ratio < 1 ? 'high' : 'max'
+  return <span className={`score-badge score-${state}${animate ? ' score-changed' : ''}`} aria-label={`${score} out of ${maxScore}`}>
+    <span>{score}</span>{state === 'max' && <span className="score-star" aria-hidden="true">★</span>}
+  </span>
 }
 
-export default function StudentRow({ student, labels = [], mobile }) {
-  const name = student.name || student.id
-  const initial = (name && name[0]) ? name[0].toUpperCase() : '?'
-  const hw = labels.map((_, index) => student[`hw${index + 1}`] ?? null)
+function ProgressRoute({ scores }) {
+  const completed = scores.filter((score) => score > 0).length
+  const currentIndex = completed >= scores.length ? -1 : scores.findIndex((score) => score === 0)
+  return <div className="progress-route" aria-label={`${completed} of ${scores.length} assignments completed`}>
+    <span className="route-line" aria-hidden="true" />
+    {scores.map((score, index) => <span key={index} className={`route-dot${score > 0 ? ' complete' : ''}${index === currentIndex ? ' current' : ''}`} aria-hidden="true" />)}
+    {scores.length > 0 && completed === scores.length && <span className="route-medal" aria-label="All assignments completed">●</span>}
+  </div>
+}
 
-  if (mobile) {
-    return (
-      <div className="student-card">
-        <div className="student-head">
-          <div className="avatar">{initial}</div>
-          <div className="student-name">{name}</div>
-        </div>
-        <div className="student-hw">
-          {hw.map((v, i) => (
-            <div key={i} className="hw-item">
-              <div className="hw-label">{labels[i] || `Homework ${i+1}`}</div>
-              <Badge value={v} />
-            </div>
-          ))}
+export default function StudentRow({ student, labels, groupId, achievementData }) {
+  const name = student.name || student.id
+  const initial = name?.[0]?.toUpperCase() || '?'
+  const stats = achievementData.statsById[student.id]
+  const rewards = getRewards(student.id, stats, achievementData)
+  const isStudentOfMonth = achievementData.studentOfMonthIds.has(student.id)
+  const previousScores = useRef(stats.scores)
+  const [changedIndex, setChangedIndex] = useState(-1)
+  const [animateMedal, setAnimateMedal] = useState(false)
+
+  useEffect(() => {
+    const index = stats.scores.findIndex((score, scoreIndex) => score !== previousScores.current[scoreIndex])
+    previousScores.current = stats.scores
+    if (index < 0) return undefined
+    setChangedIndex(index)
+    const timeout = window.setTimeout(() => setChangedIndex(-1), 650)
+    return () => window.clearTimeout(timeout)
+  }, [stats.scores.join('|')])
+
+  useEffect(() => {
+    if (!isStudentOfMonth) return undefined
+    const month = new Date().toISOString().slice(0, 7)
+    const key = `achievement-medal-seen:${groupId}:${student.id}:${month}`
+    try {
+      if (window.localStorage.getItem(key)) return undefined
+      window.localStorage.setItem(key, '1')
+    } catch {
+      // Private browsing can block storage; the award still remains visible.
+    }
+    setAnimateMedal(true)
+    const timeout = window.setTimeout(() => setAnimateMedal(false), 1100)
+    return () => window.clearTimeout(timeout)
+  }, [groupId, isStudentOfMonth, student.id])
+
+  return <tr>
+    <th scope="row" className="name-cell">
+      <div className="student-profile">
+        <div className="avatar" aria-hidden="true">{initial}</div>
+        <div className="profile-details">
+          <div className="name-line">
+            <span className="name-text">{name}</span>
+            {isStudentOfMonth && <span className={`month-medal${animateMedal ? ' medal-arrival' : ''}`} aria-label="Student of the Month">
+              <span aria-hidden="true">🏅</span>{animateMedal && <span className="medal-particles" aria-hidden="true"><i /><i /><i /></span>}
+            </span>}
+          </div>
+          <div className="profile-meta"><span className={`level-badge level-${stats.level.toLowerCase().replace(' ', '-')}`}>{stats.level}</span><span className="xp-label">{stats.xp} XP</span></div>
+          <div className="personal-progress" aria-label={`${stats.progress}% of available XP`}><span style={{ width: `${stats.progress}%` }} /></div>
+          <div className="reward-list" aria-label="Earned rewards">
+            {rewards.length ? rewards.map((reward) => <RewardBadge key={reward.id} reward={reward} />) : <span className="no-rewards">Next reward ahead</span>}
+          </div>
+          <ProgressRoute scores={stats.scores} />
         </div>
       </div>
-    )
-  }
-
-  return (
-    <tr>
-      <td className="name-cell">
-        <div className="row-name">
-          <div className="avatar">{initial}</div>
-          <div className="name-text">{name}</div>
-        </div>
-      </td>
-      {hw.map((v, i) => (
-        <td key={i}><Badge value={v} /></td>
-      ))}
-    </tr>
-  )
+    </th>
+    {stats.scores.map((value, index) => <td key={index} data-label={labels[index]}><ScoreBadge value={value} maxScore={achievementData.maxScore} animate={changedIndex === index} /></td>)}
+  </tr>
 }
