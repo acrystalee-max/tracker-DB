@@ -4,7 +4,7 @@ service cloud.firestore {
   match /databases/{database}/documents {
     function isOwner() {
       return request.auth != null
-        && request.auth.uid == "Yic6ABeP1jY9WtQ5SatIgmz3vEk2";
+        && request.auth.uid == "Yic6ABePljY9WtQ5SatIgmz3vEk2";
     }
 
     function isTrackerGroup(groupId) {
