@@ -9,7 +9,7 @@ function Badge({ value }){
 export default function StudentRow({ student, labels = [], mobile }) {
   const name = student.name || student.id
   const initial = (name && name[0]) ? name[0].toUpperCase() : '?'
-  const hw = [1,2,3,4,5].map((n) => student[`hw${n}`] ?? null)
+  const hw = labels.map((_, index) => student[`hw${index + 1}`] ?? null)
 
   if (mobile) {
     return (
