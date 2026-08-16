@@ -11,11 +11,13 @@ export default function GroupAccessSetup({ group }) {
   const [confirmation, setConfirmation] = useState('')
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
+  const [resetMode, setResetMode] = useState(false)
 
   useEffect(() => {
     let active = true
     setChecking(true)
     setMessage('')
+    setResetMode(false)
     getDoc(doc(db, 'groupDirectory', group.id))
       .then(async (snapshot) => {
         if (!snapshot.exists()) {
@@ -64,29 +66,43 @@ export default function GroupAccessSetup({ group }) {
 
     try {
       let credential
+      let accessEmail = group.accountEmail
       let repaired = false
-      try {
-        credential = await createUserWithEmailAndPassword(secondaryAuth, group.accountEmail, password)
-      } catch (authError) {
-        if (authError.code !== 'auth/email-already-in-use') throw authError
-        credential = await signInWithEmailAndPassword(secondaryAuth, group.accountEmail, password)
-        repaired = true
+      if (resetMode) {
+        for (const email of group.accountEmails.slice(1)) {
+          try {
+            credential = await createUserWithEmailAndPassword(secondaryAuth, email, password)
+            accessEmail = email
+            break
+          } catch (authError) {
+            if (authError.code !== 'auth/email-already-in-use') throw authError
+          }
+        }
+        if (!credential) throw new Error('No replacement group accounts are available.')
+      } else {
+        try {
+          credential = await createUserWithEmailAndPassword(secondaryAuth, group.accountEmail, password)
+        } catch (authError) {
+          if (authError.code !== 'auth/email-already-in-use') throw authError
+          credential = await signInWithEmailAndPassword(secondaryAuth, group.accountEmail, password)
+          repaired = true
+        }
       }
       await setDoc(doc(db, 'groupAccess', credential.user.uid), {
         groupId: group.id,
-        email: group.accountEmail,
-        [repaired ? 'repairedAt' : 'createdAt']: serverTimestamp(),
+        email: accessEmail,
+        [resetMode ? 'resetAt' : repaired ? 'repairedAt' : 'createdAt']: serverTimestamp(),
       }, { merge: true })
       await setDoc(doc(db, 'groupDirectory', group.id), {
         uid: credential.user.uid,
-        email: group.accountEmail,
+        email: accessEmail,
         configuredAt: serverTimestamp(),
       })
       await signOut(secondaryAuth)
       setPassword('')
       setConfirmation('')
       setConfigured(true)
-      setMessage(repaired ? 'Existing access repaired. The current group password now works.' : 'Access created. Share only the group link and chosen password.')
+      setMessage(resetMode ? 'A new group password is active. The old password is no longer needed.' : repaired ? 'Existing access repaired. The current group password now works.' : 'Access created. Share only the group link and chosen password.')
     } catch (error) {
       console.error('Group access setup error', error)
       if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
@@ -104,15 +120,18 @@ export default function GroupAccessSetup({ group }) {
   if (configured) {
     return <div className="group-access-status group-access-ready">
       <span>Password access is configured for this group.{message && <> {message}</>}</span>
-      <button type="button" className="btn btn-info" onClick={() => { setConfigured(false); setMessage('') }}>Repair access</button>
+      <div className="group-access-actions">
+        <button type="button" className="btn btn-info" onClick={() => { setResetMode(false); setConfigured(false); setMessage('') }}>Repair access</button>
+        <button type="button" className="btn btn-primary" onClick={() => { setResetMode(true); setConfigured(false); setMessage('') }}>Set new password</button>
+      </div>
     </div>
   }
 
   return (
     <form className="group-access card" onSubmit={createAccess}>
       <div>
-        <div className="group-access-title">Create or repair access for {group.name}</div>
-        <div className="group-access-help">For an existing group, enter its current password. The password is never stored in the database.</div>
+        <div className="group-access-title">{resetMode ? 'Set a new password' : 'Create or repair access'} for {group.name}</div>
+        <div className="group-access-help">{resetMode ? 'Choose a new password. You do not need to know the old one.' : 'For an existing group, enter its current password.'} The password is never stored in the database.</div>
       </div>
       <div className="group-access-fields">
         <label>Password
@@ -122,7 +141,7 @@ export default function GroupAccessSetup({ group }) {
           <input type="password" value={confirmation} onChange={(event) => setConfirmation(event.target.value)} autoComplete="new-password" />
         </label>
       </div>
-      <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Checking...' : 'Create or repair access'}</button>
+      <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Saving...' : resetMode ? 'Activate new password' : 'Create or repair access'}</button>
       {message && <div className="group-access-message">{message}</div>}
     </form>
   )
