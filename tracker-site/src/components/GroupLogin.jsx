@@ -15,7 +15,7 @@ export default function GroupLogin({ group }) {
       await signInWithEmailAndPassword(auth, group.accountEmail, password)
     } catch (loginError) {
       console.error('Group login error', loginError)
-      setError('Неверный пароль. Проверьте его и попробуйте ещё раз.')
+      setError('Incorrect password. Check it and try again.')
     } finally {
       setLoading(false)
     }
@@ -25,9 +25,9 @@ export default function GroupLogin({ group }) {
     <main className="group-login-wrap">
       <form className="group-login card" onSubmit={submit}>
         <div className="group-login-badge">{group.id}</div>
-        <h2>Вход в {group.name.toLowerCase()}</h2>
-        <p>Введите пароль, который вы получили от преподавателя.</p>
-        <label>Пароль группы
+        <h2>Sign in to {group.name}</h2>
+        <p>Enter the password provided by your teacher.</p>
+        <label>Group password
           <input
             type="password"
             value={password}
@@ -38,7 +38,7 @@ export default function GroupLogin({ group }) {
         </label>
         {error && <div className="login-error">{error}</div>}
         <button type="submit" className="btn btn-primary" disabled={loading || !password}>
-          {loading ? 'Проверяю...' : 'Открыть трекер'}
+          {loading ? 'Checking...' : 'Open tracker'}
         </button>
       </form>
     </main>
