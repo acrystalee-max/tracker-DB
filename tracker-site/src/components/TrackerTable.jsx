@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { subscribeStudents } from '../services/studentsService'
+import { subscribeStudents, subscribeHomeworkLabels, DEFAULT_HOMEWORK_LABELS } from '../services/studentsService'
 import LoadingState from './LoadingState'
 import ErrorState from './ErrorState'
 import StudentRow from './StudentRow'
@@ -7,6 +7,7 @@ import StudentRow from './StudentRow'
 export default function TrackerTable() {
   const [students, setStudents] = useState(null)
   const [error, setError] = useState(null)
+  const [homeworkLabels, setHomeworkLabels] = useState(DEFAULT_HOMEWORK_LABELS)
 
   useEffect(() => {
     const unsub = subscribeStudents((list) => {
@@ -16,6 +17,11 @@ export default function TrackerTable() {
       console.error('Firestore error', e)
       setError('Unable to load data. Please try later.')
     })
+    return () => unsub()
+  }, [])
+
+  useEffect(() => {
+    const unsub = subscribeHomeworkLabels(setHomeworkLabels, (e) => console.error('Homework labels error', e))
     return () => unsub()
   }, [])
 
@@ -32,16 +38,12 @@ export default function TrackerTable() {
           <thead>
             <tr>
               <th>Name</th>
-              <th>Homework 1</th>
-              <th>Homework 2</th>
-              <th>Homework 3</th>
-              <th>Homework 4</th>
-              <th>Homework 5</th>
+              {homeworkLabels.map((label, index) => <th key={index}>{label}</th>)}
             </tr>
           </thead>
           <tbody>
             {students.map((s) => (
-              <StudentRow key={s.id} student={s} />
+              <StudentRow key={s.id} student={s} labels={homeworkLabels} />
             ))}
           </tbody>
           </table>
@@ -50,7 +52,7 @@ export default function TrackerTable() {
         <div className="students-list-mobile">
           {students.map((s) => (
             <div key={s.id} className="student-card-mobile">
-              <StudentRow student={s} mobile />
+              <StudentRow student={s} labels={homeworkLabels} mobile />
             </div>
           ))}
         </div>
