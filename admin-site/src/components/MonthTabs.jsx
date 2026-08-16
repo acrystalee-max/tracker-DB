@@ -13,7 +13,7 @@ export default function MonthTabs({ value, onChange }) {
         className={`month-tab month-${month.tone}${value === month.id ? ' active' : ''}`}
         onClick={() => onChange(month.id)}
       >
-        <span className="month-art" aria-hidden="true">{month.art}</span>
+        <span className="month-art" aria-hidden="true"><img src={month.art} alt="" /></span>
         <span>{month.name}</span>
       </button>)}
     </div>

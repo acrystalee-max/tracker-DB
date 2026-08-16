@@ -76,15 +76,13 @@ button { touch-action: manipulation; }
 }
 .month-panel-title { position: absolute; top: 6px; left: 24px; display: flex; align-items: center; gap: 7px; border: 2px solid #f1bf4f; border-radius: 0 0 12px 12px; padding: 5px 20px 7px; color: #fff; background: linear-gradient(180deg, #1271bb, #073c7d); font-size: 13px; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; text-shadow: 0 2px 2px #052e64; }
 .month-panel-title span { color: #ffd65e; }
-.month-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 3px 3px 8px; scrollbar-color: #73dff0 rgba(3,57,108,.35); scroll-snap-type: x proximity; }
-.month-tab { position: relative; min-width: 98px; min-height: 72px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; scroll-snap-align: start; border: 2px solid rgba(255,255,255,.72); border-radius: 15px; padding: 6px 8px; color: #fff; background: linear-gradient(145deg, #109bc1, #076399); box-shadow: inset 0 0 0 2px rgba(4,62,118,.32), 0 5px 9px rgba(0,39,83,.24); cursor: pointer; font-size: 11px; font-weight: 900; text-shadow: 0 1px 2px #06406f; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
+.month-tabs { display: grid; grid-template-columns: repeat(9, minmax(82px, 1fr)); gap: 8px; overflow-x: auto; padding: 3px 3px 8px; scrollbar-color: #73dff0 rgba(3,57,108,.35); scroll-snap-type: x proximity; }
+.month-tab { position: relative; min-width: 82px; min-height: 82px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; scroll-snap-align: start; border: 2px solid rgba(255,255,255,.8); border-radius: 16px; padding: 4px 7px 7px; color: #fff; background: linear-gradient(145deg, #16b1d0 0%, #087caf 46%, #064f89 100%); box-shadow: inset 0 0 0 2px rgba(3,54,105,.42), inset 0 2px 5px rgba(255,255,255,.4), 0 5px 10px rgba(0,39,83,.3); cursor: pointer; font-size: 11px; font-weight: 900; text-shadow: 0 1px 2px #06406f; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
 .month-tab:hover { transform: translateY(-2px); border-color: #fff4bd; }
 .month-tab.active { border-color: #ffd052; color: #063a76; background: linear-gradient(145deg, #fff, #c9f4ff); box-shadow: inset 0 0 0 2px #fff, 0 0 0 2px #d7950d, 0 7px 13px rgba(0,40,82,.28); text-shadow: none; }
-.month-art { width: 38px; height: 34px; display: grid; place-items: center; border-radius: 11px; background: rgba(255,255,255,.17); font-size: 25px; filter: drop-shadow(0 3px 2px rgba(0,44,81,.25)); }
-.month-tab.active .month-art { background: linear-gradient(145deg, #f7ffff, #aeeaf7); }
-.month-spring .month-art { background-color: rgba(151,234,174,.28); }
-.month-summer .month-art { background-color: rgba(255,219,91,.25); }
-.month-autumn .month-art { background-color: rgba(255,151,74,.25); }
+.month-art { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 13px; background: radial-gradient(circle at 38% 25%, rgba(255,255,255,.52), rgba(60,210,231,.18) 48%, rgba(0,48,104,.2)); box-shadow: inset 0 0 0 1px rgba(255,255,255,.18); }
+.month-art img { width: 52px; height: 52px; object-fit: contain; filter: drop-shadow(0 4px 3px rgba(0,35,73,.38)); transform: translateY(-1px); }
+.month-tab.active .month-art { background: radial-gradient(circle at 38% 25%, #fff, #c7f6ff 54%, #76cee1); box-shadow: inset 0 0 0 1px #fff, 0 0 10px rgba(255,203,55,.7); }
 
 .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin: 0 4px 14px; }
 .section-heading h2 { margin: 0; font-size: clamp(21px, 3vw, 27px); letter-spacing: -.02em; }
@@ -247,7 +245,8 @@ button { touch-action: manipulation; }
   .month-panel-title { top: 5px; left: 16px; padding: 4px 14px 6px; font-size: 11px; }
   .month-tabs { gap: 6px; padding-bottom: 6px; }
   .month-tab { min-width: 82px; min-height: 64px; border-radius: 13px; font-size: 10px; }
-  .month-art { width: 32px; height: 29px; font-size: 21px; }
+  .month-art { width: 42px; height: 42px; }
+  .month-art img { width: 46px; height: 46px; }
   .hero { grid-template-columns: 1fr minmax(125px, .7fr); min-height: 145px; border-radius: 20px; padding: 14px 16px; }
   .hero h1 { font-size: 26px; }
   .hero .tag { margin-top: 8px; font-size: 13px; }
