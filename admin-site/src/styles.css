@@ -65,6 +65,7 @@ body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;back
 .copy-message{font-size:13px;color:#047857;font-weight:700}
 .group-access{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
 .group-access-title{font-weight:700}
+.group-access-mode-toggle{display:block;margin-top:7px;padding:0;border:0;background:transparent;color:#0b67a5;font:inherit;font-size:13px;font-weight:800;text-decoration:underline;cursor:pointer}
 .group-access-fields{display:flex;gap:10px;flex:1;min-width:300px}
 .group-access-fields label{flex:1;font-size:12px;font-weight:600}
 .group-access-fields input{box-sizing:border-box;width:100%;margin-top:5px;padding:9px 10px;border:1px solid #cbd8e6;border-radius:8px}
