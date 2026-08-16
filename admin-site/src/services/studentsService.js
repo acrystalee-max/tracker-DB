@@ -2,7 +2,7 @@ import { db } from './firebase'
 import { collection, doc, setDoc, deleteDoc, getDoc, addDoc, serverTimestamp, updateDoc, onSnapshot, query } from 'firebase/firestore'
 
 const GROUP = import.meta.env.VITE_FIREBASE_GROUP_COLLECTION || 'Gr1'
-const SETTINGS_ID = '__settings__'
+const SETTINGS_ID = 'trackerSettings'
 export const DEFAULT_HOMEWORK_LABELS = [1, 2, 3, 4, 5].map((n) => `Homework ${n}`)
 
 export function subscribeStudents(onUpdate, onError){
