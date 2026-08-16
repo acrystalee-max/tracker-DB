@@ -7,6 +7,7 @@ import GroupAccessSetup from './components/GroupAccessSetup'
 import MonthTabs from './components/MonthTabs'
 import { GROUPS, getGroup } from './config/groups'
 import { getCurrentMonthId } from './config/months'
+import { saveGroupName, subscribeGroupNames } from './services/groupService'
 
 import CorgiSmall from './assets/corgi-small.svg'
 
@@ -16,7 +17,11 @@ export default function App(){
   const [selectedGroupId, setSelectedGroupId] = useState('Gr1')
   const [selectedMonthId, setSelectedMonthId] = useState(getCurrentMonthId)
   const [copyMessage, setCopyMessage] = useState('')
-  const selectedGroup = getGroup(selectedGroupId)
+  const [groupNames, setGroupNames] = useState({})
+  const [groupNameDraft, setGroupNameDraft] = useState('')
+  const [groupNameMessage, setGroupNameMessage] = useState('')
+  const baseGroup = getGroup(selectedGroupId)
+  const selectedGroup = { ...baseGroup, name: groupNames[selectedGroupId] || baseGroup.name }
 
   useEffect(()=>{
     const unsub = onAuthStateChanged(auth, (u)=>{
@@ -25,6 +30,16 @@ export default function App(){
     })
     return unsub
   },[])
+
+  useEffect(() => {
+    if (!user) return undefined
+    return subscribeGroupNames(setGroupNames, (error) => console.error('Group names error', error))
+  }, [user])
+
+  useEffect(() => {
+    setGroupNameDraft(selectedGroup.name)
+    setGroupNameMessage('')
+  }, [selectedGroupId, selectedGroup.name])
 
   return (
     <div className="app">
@@ -51,10 +66,25 @@ export default function App(){
                     type="button"
                     className={group.id === selectedGroupId ? 'group-tab active' : 'group-tab'}
                     onClick={()=>{ setSelectedGroupId(group.id); setCopyMessage('') }}
-                  >{group.name}</button>)}
+                  >{groupNames[group.id] || group.name}</button>)}
                 </div>
                 <div className="group-link-row">
-                  <div><strong>{selectedGroup.name}</strong><div className="group-link-help">Each group has its own link and password.</div></div>
+                  <div className="group-name-editor">
+                    <label>Group name
+                      <input maxLength="40" value={groupNameDraft} onChange={(event) => setGroupNameDraft(event.target.value)} />
+                    </label>
+                    <button type="button" className="btn btn-primary" onClick={async()=>{
+                      setGroupNameMessage('')
+                      try {
+                        const savedName = await saveGroupName(selectedGroup.id, groupNameDraft)
+                        setGroupNames((current) => ({ ...current, [selectedGroup.id]: savedName }))
+                        setGroupNameMessage('Name saved')
+                      } catch (error) {
+                        setGroupNameMessage(error.message || 'Unable to save name')
+                      }
+                    }}>Save name</button>
+                    {groupNameMessage && <span className="copy-message">{groupNameMessage}</span>}
+                  </div>
                   <button type="button" className="btn btn-info" onClick={async()=>{
                     const url = new URL('../tracker/', window.location.href)
                     url.searchParams.set('group', selectedGroup.id)

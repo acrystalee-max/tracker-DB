@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc, onSnapshot } from 'firebase/firestore'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import TrackerTable from './components/TrackerTable'
 import GroupLogin from './components/GroupLogin'
@@ -16,6 +16,7 @@ export default function App() {
   const [checking, setChecking] = useState(true)
   const [accessError, setAccessError] = useState('')
   const [monthId, setMonthId] = useState(getInitialMonth)
+  const [groupName, setGroupName] = useState(group.name)
   const adminUid = import.meta.env.VITE_FIREBASE_ADMIN_UID || 'Yic6ABePljY9WtQ5SatIgmz3vEk2'
 
   useEffect(() => {
@@ -53,6 +54,17 @@ export default function App() {
   }, [adminUid, group.id])
 
   useEffect(() => {
+    if (!authorized) {
+      setGroupName(group.name)
+      return undefined
+    }
+    return onSnapshot(doc(db, group.id, 'groupProfile'), (snapshot) => {
+      const savedName = snapshot.exists() ? String(snapshot.data().displayName || '').trim() : ''
+      setGroupName(savedName || group.name)
+    }, (error) => console.error('Group name error', error))
+  }, [authorized, group.id, group.name])
+
+  useEffect(() => {
     const url = new URL(window.location.href)
     url.searchParams.set('month', monthId)
     window.history.replaceState({}, '', url)
@@ -61,14 +73,18 @@ export default function App() {
   if (checking) return <div className="app"><div className="loading">Checking access...</div></div>
   if (!user || !authorized) return <div className="app"><GroupLogin group={group} accessError={accessError} onAttempt={() => setAccessError('')} /></div>
 
+  const displayGroup = { ...group, name: groupName }
+
   return (
     <div className="app">
-      <div className="tracker-toolbar"><span><i aria-hidden="true" />Viewing {group.name}</span><button type="button" className="btn btn-ghost" onClick={()=>signOut(auth)}>Sign out <b aria-hidden="true">↗</b></button></div>
+      <div className="tracker-toolbar"><span><i aria-hidden="true" />Viewing {displayGroup.name}</span><button type="button" className="btn btn-ghost" onClick={()=>signOut(auth)}>Sign out <b aria-hidden="true">↗</b></button></div>
       <header className="hero">
         <div className="hero-text">
-          <p className="hero-kicker">Welcome to {group.name}</p>
-          <h1>Achievement Academy</h1>
-          <p className="tag">Complete your homework, earn XP and unlock rewards!</p>
+          <p className="hero-kicker">{displayGroup.name}</p>
+          <p className="hero-welcome">Welcome</p>
+          <h1>Step Up!</h1>
+          <p className="tag">Do your homework, claim your prize — watch your English rise!</p>
+          <p className="hero-teacher">Your teacher Olesia Nikolaevna</p>
         </div>
         <div className="hero-illustration">
           <img src={Corgi} alt="Corgi mascot" className="corgi-png" loading="lazy" />
@@ -76,7 +92,7 @@ export default function App() {
       </header>
       <main>
         <MonthTabs value={monthId} onChange={setMonthId} />
-        <TrackerTable group={group} monthId={monthId} />
+        <TrackerTable group={displayGroup} monthId={monthId} />
       </main>
       
     </div>
