@@ -33,11 +33,11 @@ export default function GroupAccessSetup({ group }) {
     event.preventDefault()
     setMessage('')
     if (password.length < 6) {
-      setMessage('Пароль должен содержать не менее 6 символов.')
+      setMessage('The password must contain at least 6 characters.')
       return
     }
     if (password !== confirmation) {
-      setMessage('Пароли не совпадают.')
+      setMessage('The passwords do not match.')
       return
     }
 
@@ -63,13 +63,13 @@ export default function GroupAccessSetup({ group }) {
       setPassword('')
       setConfirmation('')
       setConfigured(true)
-      setMessage('Доступ создан. Передайте группе только ссылку и выбранный пароль.')
+      setMessage('Access created. Share only the group link and chosen password.')
     } catch (error) {
       console.error('Group access setup error', error)
       if (error.code === 'auth/email-already-in-use') {
-        setMessage('Доступ для этой группы уже создавался. Для смены пароля используйте Firebase Authentication.')
+        setMessage('Access for this group already exists. Use Firebase Authentication to change its password.')
       } else {
-        setMessage('Не удалось создать доступ. Проверьте настройки Firebase Authentication.')
+        setMessage('Unable to create access. Check Firebase Authentication settings.')
       }
     } finally {
       setSaving(false)
@@ -77,26 +77,26 @@ export default function GroupAccessSetup({ group }) {
     }
   }
 
-  if (checking) return <div className="group-access-status">Проверяю доступ группы...</div>
+  if (checking) return <div className="group-access-status">Checking group access...</div>
   if (configured) {
-    return <div className="group-access-status group-access-ready">Доступ по паролю для этой группы настроен.</div>
+    return <div className="group-access-status group-access-ready">Password access is configured for this group.</div>
   }
 
   return (
     <form className="group-access card" onSubmit={createAccess}>
       <div>
-        <div className="group-access-title">Создать пароль для {group.name.toLowerCase()}</div>
-        <div className="group-access-help">Пароль нигде не показывается и не сохраняется в базе. Запишите его перед созданием доступа.</div>
+        <div className="group-access-title">Create a password for {group.name}</div>
+        <div className="group-access-help">The password is not displayed or stored in the database. Save it before creating access.</div>
       </div>
       <div className="group-access-fields">
-        <label>Пароль
+        <label>Password
           <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="new-password" />
         </label>
-        <label>Повторите пароль
+        <label>Repeat password
           <input type="password" value={confirmation} onChange={(event) => setConfirmation(event.target.value)} autoComplete="new-password" />
         </label>
       </div>
-      <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Создаю...' : 'Создать доступ группы'}</button>
+      <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Creating...' : 'Create group access'}</button>
       {message && <div className="group-access-message">{message}</div>}
     </form>
   )
